@@ -1,168 +1,154 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MaterialApp(
-    home: MultiplicadorRomanos(),
-  ));
-}
-
-class MultiplicadorRomanos extends StatefulWidget {
-  @override
-  _MultiplicadorRomanosState createState() => _MultiplicadorRomanosState();
-}
-
-class _MultiplicadorRomanosState extends State<MultiplicadorRomanos> {
-  final _controller1 = TextEditingController();
-  final _controller2 = TextEditingController();
-  final _controller3 = TextEditingController();
-  String resultadoDecimal = '';
-  String resultadoRomano = '';
-
-  final Map<String, int> _romanMap = {
-    'I': 1,
-    'V': 5,
-    'X': 10,
-    'L': 50,
-    'C': 100,
-    'D': 500,
-    'M': 1000,
-  };
-
-  // Convertir Romano a Decimal
-  int romanToDecimal(String roman) {
-    int result = 0;
-    int prevValue = 0;
-
-    for (int i = roman.length - 1; i >= 0; i--) {
-      int value = _romanMap[roman[i]] ?? 0;
-      if (value < prevValue) {
-        result -= value;
-      } else {
-        result += value;
-        prevValue = value;
-      }
-    }
-    return result;
-  }
-
-  // Convertir Decimal a Romano
-  String decimalToRoman(int num) {
-    List<MapEntry<String, int>> romanList = [
-      MapEntry('M', 1000),
-      MapEntry('CM', 900),
-      MapEntry('D', 500),
-      MapEntry('CD', 400),
-      MapEntry('C', 100),
-      MapEntry('XC', 90),
-      MapEntry('L', 50),
-      MapEntry('XL', 40),
-      MapEntry('X', 10),
-      MapEntry('IX', 9),
-      MapEntry('V', 5),
-      MapEntry('IV', 4),
-      MapEntry('I', 1),
-    ];
-
-    String result = '';
-    for (var entry in romanList) {
-      while (num >= entry.value) {
-        result += entry.key;
-        num -= entry.value;
-      }
-    }
-    return result;
-  }
-
-  // Validar si es un número romano correcto (simplificado)
-  bool isRomanValid(String roman) {
-    final regex = RegExp(r'^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$');
-    return regex.hasMatch(roman.toUpperCase());
-  }
-
-  void multiplicar() {
-    String r1 = _controller1.text.toUpperCase();
-    String r2 = _controller2.text.toUpperCase();
-    String r3 = _controller3.text.toUpperCase();
-
-    if (r1.isEmpty || r2.isEmpty || r3.isEmpty) {
-      _showError('Por favor llena los tres campos.');
-      return;
-    }
-
-    if (!isRomanValid(r1) || !isRomanValid(r2) || !isRomanValid(r3)) {
-      _showError('Uno o más números romanos no son válidos.');
-      return;
-    }
-
-    int n1 = romanToDecimal(r1);
-    int n2 = romanToDecimal(r2);
-    int n3 = romanToDecimal(r3);
-
-    int resultado = n1 * n2 * n3;
-
-    if (resultado > 3999) {
-      _showError('El resultado excede 3999.');
-      return;
-    }
-
-    setState(() {
-      resultadoDecimal = resultado.toString();
-      resultadoRomano = decimalToRoman(resultado);
-    });
-  }
-
-  void _showError(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            child: Text('OK'),
-            onPressed: () => Navigator.pop(context),
+        Padding(
+          padding: EdgeInsets.only(left: 26, top: 20),
+          child: Text("All reviews", style: TextStyle(
+            color: Color(0xff808285),
+            fontSize: 13.79,
+          ),),
           ),
-        ],
-      ),
-    );
+
+
+------------------------------------------------------------
+      required this.stars,
+  final double stars;
+
+Widget _buildStars(double rating){
+    const starSize = 14.0;
+    List<Widget> stars = [];
+
+    for(int i= 1; i<=5; i++){
+      if(i <= rating.floor()){
+        stars.add(const Icon(Icons.star, color: Colors.yellow, size: starSize,));
+      }else if(i - rating <= 0.5){
+        stars.add(const Icon(Icons.star_half, color: Colors.yellow, size: starSize,));
+      }else{
+        stars.add(const Icon(Icons.star_border, color: Colors.yellow, size: starSize,));
+      }
+    }
+
+    return Row(children: stars,);
   }
 
-  @override
-  void dispose() {
-    _controller1.dispose();
-    _controller2.dispose();
-    _controller3.dispose();
-    super.dispose();
-  }
+
+       final userStars = Container(
+      margin: const EdgeInsets.only(left: 20, top: 5),
+      child: _buildStars(stars),
+    );
+
+
+
+-------------------
+
+
+
+class SearchTripsPage extends StatelessWidget {
+  const SearchTripsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Multiplicador de Romanos')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+      body: Stack(
+        children: <Widget>[
+
+          const SearchHeader(),
+          
+          Positioned(
+            top: 170,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Image.asset(
+              'assets/images/pantalla.png',
+              fit: BoxFit.fill,
+            ),
+          ),
+
+
+        ],
+      ),
+    );
+  }
+}
+
+
+-----------
+
+
+class SearchHeader extends StatelessWidget {
+  const SearchHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 40, 24, 24),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF3B82F6), Color(0xFF6366F1)], // azul a violeta
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Search',
+            style: TextStyle(
+              fontSize: 26,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 16),
+
+         CleanSearchBox(),
+        ],
+      ),
+    );
+  }
+}
+-----------
+
+import 'package:flutter/material.dart';
+
+class CleanSearchBox extends StatelessWidget {
+  CleanSearchBox({super.key});
+
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF3B82F6), Color(0xFF6366F1)],
+        ),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Row(
           children: [
-            TextField(
-              controller: _controller1,
-              decoration: InputDecoration(labelText: 'Primer número romano'),
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  hintText: 'Knuckles Mountain Range',
+                  border: InputBorder.none,
+                ),
+              ),
             ),
-            TextField(
-              controller: _controller2,
-              decoration: InputDecoration(labelText: 'Segundo número romano'),
+            IconButton(
+              icon: const Icon(Icons.search, color: Colors.grey),
+              onPressed: () {
+                _controller.text = 'Bienvenido a buscar';
+              },
             ),
-            TextField(
-              controller: _controller3,
-              decoration: InputDecoration(labelText: 'Tercer número romano'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: multiplicar,
-              child: Text('Multiplicar'),
-            ),
-            SizedBox(height: 20),
-            Text('Resultado Decimal: $resultadoDecimal'),
-            Text('Resultado Romano: $resultadoRomano'),
           ],
         ),
       ),
